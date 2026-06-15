@@ -13,7 +13,7 @@ export default function Layout({ user, children }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-amber-50">
+    <div className="min-h-screen bg-purple-50">
       <header className="bg-white border-b border-gold-200 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
