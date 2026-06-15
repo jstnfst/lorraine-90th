@@ -5,4 +5,4 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "lorraine-90th-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "c6fe8286-f6a8-4df6-a17b-3a81a3727419"
