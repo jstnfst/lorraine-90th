@@ -3,6 +3,8 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   deploy:
@@ -10,20 +12,31 @@ jobs:
     permissions:
       contents: read
       deployments: write
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: 22
+          cache: npm
 
       - run: npm ci
 
-      - run: npm run build
+      - name: Build
+        run: npm run build
 
-      - run: npx wrangler d1 migrations apply lorraine-90th-db --remote
+      - name: Apply D1 migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.100.0'
+          command: d1 migrations apply lorraine-90th-db --remote
 
-      - run: npx wrangler pages deploy dist --project-name=lorraine-90th
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.100.0'
+          command: pages deploy dist --project-name=lorraine-90th
