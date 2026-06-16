@@ -74,7 +74,7 @@ export default function UserView({ user }: Props) {
         <div className="grid sm:grid-cols-3 gap-4 text-center">
           <Detail label="Date" value="September 5, 2026" />
           <Detail label="Time" value="12:00 PM – 6:00 PM" />
-          <Detail label="Location" value="TBD" />
+          <Detail label="Location" value="Contact the family for the address" />
         </div>
       </Card>
 

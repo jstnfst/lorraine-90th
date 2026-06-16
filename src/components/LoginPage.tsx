@@ -13,7 +13,7 @@ export default function LoginPage() {
           Lorraine's
         </h1>
         <h2 className="font-serif text-5xl font-bold text-lavender-600 leading-tight mb-6">
-          90<span className="text-stone-800">th</span>
+          90<span className="text-stone-800">th Birthday</span>
         </h2>
         <p className="text-stone-500 mb-8">
           Sign in with your Google account to RSVP and leave a message for Lorraine.

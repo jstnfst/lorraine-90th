@@ -88,7 +88,7 @@ export default function AdminView({ user }: Props) {
     <div className="space-y-8">
       <div className="text-center py-4">
         <p className="font-serif text-lg text-stone-500 italic">Admin Dashboard</p>
-        <h2 className="font-serif text-3xl font-bold text-stone-800">Lorraine's 90th</h2>
+        <h2 className="font-serif text-3xl font-bold text-stone-800">Lorraine's 90th Birthday</h2>
       </div>
 
       {/* RSVPs */}
