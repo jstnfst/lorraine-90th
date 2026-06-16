@@ -74,13 +74,15 @@ foreach ($check in $config.checks) {
     Write-Host "  [$status] $($check.id): $value$limitDisplay $limitUnit"
 }
 
+$utf8 = New-Object System.Text.UTF8Encoding $false
+
 # Dated snapshot — overwrite (one snapshot per day)
-Set-Content -Path $datedFile -Value ($header + "`n" + ($rows -join "`n")) -Encoding utf8
+[System.IO.File]::WriteAllText($datedFile, ($header + "`n" + ($rows -join "`n") + "`n"), $utf8)
 Write-Host "`nDated:   $datedFile"
 
 # Running log — append
 if (-not (Test-Path $runningFile)) {
-    Set-Content -Path $runningFile -Value $header -Encoding utf8
+    [System.IO.File]::WriteAllText($runningFile, $header + "`n", $utf8)
 }
-Add-Content -Path $runningFile -Value ($rows -join "`n") -Encoding utf8
+[System.IO.File]::AppendAllText($runningFile, ($rows -join "`n") + "`n", $utf8)
 Write-Host "Running: $runningFile"

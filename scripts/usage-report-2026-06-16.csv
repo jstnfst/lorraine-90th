@@ -1,12 +1,12 @@
-﻿timestamp,id,category,name,value,limit,limit_unit,status,notes
-2026-06-16 14:11:56,photos_total,Application,Total photos stored,2,,photos,ok,
-2026-06-16 14:11:56,photos_max_per_user,Application,Max photos by a single user,1,10,photos/user,ok,
-2026-06-16 14:11:56,top_uploaders,Application,Top uploaders (name + count),Jacqueline Faust (1 photos); Justin Faust (1 photos),,rows,ok,
-2026-06-16 14:11:56,users_total,Application,Total registered users,5,,users,ok,
-2026-06-16 14:11:56,users_banned,Application,Banned users,1,,users,ok,
-2026-06-16 14:11:56,rsvps_total,Application,Total RSVPs submitted,3,,guests,ok,
-2026-06-16 14:11:56,rsvps_confirmed,Application,RSVPs confirmed (confirmed=1),2,,guests,ok,
-2026-06-16 14:11:56,r2_object_count,R2,R2 object count (via photos table),2,,objects,ok,"Mirrors R2 exactly since every upload inserts a DB row. R2 free tier: 1M Class A ops/month (writes/deletes), 10M Class B ops/month (reads), 10 GB storage â€” op counts in Cloudflare dashboard â†’ R2 â†’ lorraine-90th-photos â†’ Metrics."
-2026-06-16 14:11:56,d1_metrics,D1,D1 rows read / written / storage,manual,,,manual,Cloudflare dashboard â†’ D1 â†’ lorraine-90th-db â†’ Metrics
-2026-06-16 14:11:56,r2_op_metrics,R2,R2 Class A / Class B operation counts,manual,,,manual,Cloudflare dashboard â†’ R2 â†’ lorraine-90th-photos â†’ Metrics
-2026-06-16 14:11:56,pages_functions,Pages Functions,Pages Function invocations,manual,,,manual,Cloudflare dashboard â†’ Pages â†’ lorraine-90th â†’ Functions
+timestamp,id,category,name,value,limit,limit_unit,status,notes
+2026-06-16 14:14:19,photos_total,Application,Total photos stored,2,,photos,ok,
+2026-06-16 14:14:19,photos_max_per_user,Application,Max photos by a single user,1,10,photos/user,ok,
+2026-06-16 14:14:19,top_uploaders,Application,Top uploaders (name + count),Jacqueline Faust (1 photos); Justin Faust (1 photos),,rows,ok,
+2026-06-16 14:14:19,users_total,Application,Total registered users,5,,users,ok,
+2026-06-16 14:14:19,users_banned,Application,Banned users,1,,users,ok,
+2026-06-16 14:14:19,rsvps_total,Application,Total RSVPs submitted,3,,guests,ok,
+2026-06-16 14:14:19,rsvps_confirmed,Application,RSVPs confirmed (confirmed=1),2,,guests,ok,
+2026-06-16 14:14:19,r2_object_count,R2,R2 object count (via photos table),2,,objects,ok,"Mirrors R2 exactly since every upload inserts a DB row. R2 free tier: 1M Class A ops/month (writes/deletes), 10M Class B ops/month (reads), 10 GB storage. Check Cloudflare dashboard > R2 > lorraine-90th-photos > Metrics for op counts."
+2026-06-16 14:14:19,d1_metrics,D1,D1 rows read / written / storage,manual,,,manual,Cloudflare dashboard > D1 > lorraine-90th-db > Metrics
+2026-06-16 14:14:19,r2_op_metrics,R2,R2 Class A / Class B operation counts,manual,,,manual,Cloudflare dashboard > R2 > lorraine-90th-photos > Metrics
+2026-06-16 14:14:19,pages_functions,Pages Functions,Pages Function invocations,manual,,,manual,Cloudflare dashboard > Pages > lorraine-90th > Functions
