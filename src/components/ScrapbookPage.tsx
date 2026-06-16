@@ -1,15 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Photo, User } from '../types';
 
+const MAX_PHOTOS = 10;
+const MAX_FILE_MB = 8;
+
+interface UploadResult {
+  uploaded: Photo[];
+  skippedCount: number;
+  oversized: string[];
+}
+
 interface Props {
   user: User;
 }
 
-export default function ScrapbookPage({ user: _user }: Props) {
+export default function ScrapbookPage({ user }: Props) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [statusMsg, setStatusMsg] = useState<{ text: string; error?: boolean } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -19,25 +28,35 @@ export default function ScrapbookPage({ user: _user }: Props) {
       .finally(() => setLoading(false));
   }, []);
 
+  const myCount = photos.filter(p => p.user_id === user.id).length;
+  const slotsLeft = MAX_PHOTOS - myCount;
+  const atLimit = slotsLeft <= 0;
+
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files?.length) return;
 
     setUploading(true);
-    setStatusMsg(`Uploading ${files.length} photo${files.length > 1 ? 's' : ''}…`);
+    setStatusMsg({ text: `Uploading…` });
 
     const formData = new FormData();
     for (const file of files) formData.append('photos', file);
 
     const r = await fetch('/api/photos', { method: 'POST', body: formData });
+    const data = await r.json() as UploadResult & { error?: string };
 
-    if (r.ok) {
-      const newPhotos: Photo[] = await r.json();
-      setPhotos(prev => [...newPhotos, ...prev]);
-      setStatusMsg(`${newPhotos.length} photo${newPhotos.length !== 1 ? 's' : ''} added!`);
-      setTimeout(() => setStatusMsg(null), 3000);
+    if (!r.ok) {
+      setStatusMsg({ text: data.error ?? 'Upload failed — please try again.', error: true });
     } else {
-      setStatusMsg('Upload failed — please try again.');
+      setPhotos(prev => [...data.uploaded, ...prev]);
+
+      const parts: string[] = [];
+      if (data.uploaded.length) parts.push(`${data.uploaded.length} photo${data.uploaded.length !== 1 ? 's' : ''} added`);
+      if (data.oversized.length) parts.push(`${data.oversized.length} skipped (over ${MAX_FILE_MB} MB)`);
+      if (data.skippedCount) parts.push(`${data.skippedCount} skipped (limit reached)`);
+
+      setStatusMsg({ text: parts.join(' · '), error: !!(data.oversized.length || data.skippedCount) });
+      setTimeout(() => setStatusMsg(null), 4000);
     }
 
     setUploading(false);
@@ -51,8 +70,13 @@ export default function ScrapbookPage({ user: _user }: Props) {
         <h3 className="font-serif text-2xl font-semibold text-stone-700 mb-2">
           Add to the Scrapbook
         </h3>
-        <p className="text-stone-400 text-sm mb-6">
+        <p className="text-stone-400 text-sm mb-1">
           Share your favorite memories for Lorraine's 90th Birthday
+        </p>
+        <p className={`text-xs mb-6 ${atLimit ? 'text-red-400' : 'text-stone-300'}`}>
+          {atLimit
+            ? `You've uploaded all ${MAX_PHOTOS} of your photos`
+            : `${slotsLeft} of ${MAX_PHOTOS} photo${MAX_PHOTOS !== 1 ? 's' : ''} remaining · max ${MAX_FILE_MB} MB per photo`}
         </p>
         <input
           ref={fileInputRef}
@@ -61,17 +85,24 @@ export default function ScrapbookPage({ user: _user }: Props) {
           accept="image/*"
           multiple
           onChange={handleFileChange}
+          disabled={atLimit || uploading}
           className="hidden"
         />
         <label
           htmlFor="photo-upload"
-          className={`inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-white font-semibold px-8 py-3 rounded-full cursor-pointer transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+          className={`inline-flex items-center gap-2 bg-gold-500 text-white font-semibold px-8 py-3 rounded-full transition-colors ${
+            atLimit || uploading
+              ? 'opacity-40 cursor-not-allowed pointer-events-none'
+              : 'hover:bg-gold-600 cursor-pointer'
+          }`}
         >
           <UploadIcon />
-          {uploading ? 'Uploading…' : 'Choose Photos'}
+          {uploading ? 'Uploading…' : atLimit ? 'Limit reached' : 'Choose Photos'}
         </label>
         {statusMsg && (
-          <p className="mt-4 text-sm text-stone-500">{statusMsg}</p>
+          <p className={`mt-4 text-sm ${statusMsg.error ? 'text-red-500' : 'text-stone-500'}`}>
+            {statusMsg.text}
+          </p>
         )}
       </div>
 
