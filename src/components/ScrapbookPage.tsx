@@ -76,7 +76,7 @@ export default function ScrapbookPage({ user }: Props) {
         <p className={`text-xs mb-6 ${atLimit ? 'text-red-400' : 'text-stone-300'}`}>
           {atLimit
             ? `You've uploaded all ${MAX_PHOTOS} of your photos`
-            : `${slotsLeft} of ${MAX_PHOTOS} photo${MAX_PHOTOS !== 1 ? 's' : ''} remaining · max ${MAX_FILE_MB} MB per photo`}
+            : `${slotsLeft} of ${MAX_PHOTOS} photos remaining · max ${MAX_FILE_MB} MB per photo`}
         </p>
         <input
           ref={fileInputRef}
