@@ -3,6 +3,8 @@
   "queries": {
     "images":         "SELECT COUNT(*) AS value FROM photos",
     "users":          "SELECT COUNT(*) AS value FROM users",
-    "rsvp_confirmed": "SELECT COUNT(*) AS value FROM rsvps WHERE confirmed = 1"
+    "rsvp_confirmed":     "SELECT COUNT(*) AS value FROM rsvps WHERE confirmed = 1",
+    "rsvp_total":         "SELECT COUNT(*) AS value FROM rsvps",
+    "questions_unanswered": "SELECT COUNT(*) AS value FROM questions WHERE answer IS NULL"
   }
 }
