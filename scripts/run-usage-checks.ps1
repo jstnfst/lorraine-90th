@@ -1,88 +1,44 @@
 # Usage: .\scripts\run-usage-checks.ps1  (run from repo root)
 
-$ErrorActionPreference = 'Continue'
-$timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-$dateSlug  = Get-Date -Format 'yyyy-MM-dd'
+$timestamp   = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+$dateSlug    = Get-Date -Format 'yyyy-MM-dd'
+$config      = Get-Content "$PSScriptRoot\usage-checks.json" -Raw | ConvertFrom-Json
+$db          = $config.db
+$utf8        = New-Object System.Text.UTF8Encoding $false
+$header      = 'timestamp,images,db_size_kb,users,rsvp_confirmed'
+$runningFile = "$PSScriptRoot\usage-report.csv"
+$datedFile   = "$PSScriptRoot\usage-report-$dateSlug.csv"
 
-$checksFile  = Join-Path $PSScriptRoot 'usage-checks.json'
-$runningFile = Join-Path $PSScriptRoot 'usage-report.csv'
-$datedFile   = Join-Path $PSScriptRoot "usage-report-$dateSlug.csv"
-
-$config = Get-Content $checksFile -Raw | ConvertFrom-Json
-$db     = $config.db
-
-$header = 'timestamp,id,category,name,value,limit,limit_unit,status,notes'
-
-function ConvertTo-CsvField($s) {
-    $s = [string]$s
-    if ($s -match '[,"\r\n]') { '"' + $s.Replace('"', '""') + '"' } else { $s }
+function Invoke-D1Query($query) {
+    $raw    = (npx wrangler d1 execute $db --remote --command $query) -join "`n"
+    $start  = $raw.IndexOf('[')
+    $parsed = $raw.Substring($start) | ConvertFrom-Json
+    return $parsed[0]
 }
 
-$rows = [System.Collections.Generic.List[string]]::new()
+$r1 = Invoke-D1Query $config.queries.images
+$r2 = Invoke-D1Query $config.queries.users
+$r3 = Invoke-D1Query $config.queries.rsvp_confirmed
 
-foreach ($check in $config.checks) {
-    $value     = ''
-    $status    = 'ok'
-    $notes     = if ($check.PSObject.Properties['note']) { $check.note } else { '' }
-    $limitVal  = if ($null -ne $check.limit) { $check.limit } else { '' }
-    $limitUnit = if ($check.PSObject.Properties['limit_unit']) { $check.limit_unit } else { '' }
+$images        = $r1.results[0].value
+$db_size_kb    = [math]::Round($r1.meta.size_after / 1KB, 1)
+$users         = $r2.results[0].value
+$rsvp_confirmed = $r3.results[0].value
 
-    if ($check.type -eq 'd1_query') {
-        try {
-            $rawLines = npx wrangler d1 execute $db --remote --command $check.command
-            $raw = $rawLines -join "`n"
+$row = "$timestamp,$images,$db_size_kb,$users,$rsvp_confirmed"
 
-            $jsonStart = $raw.IndexOf('[')
-            if ($jsonStart -ge 0) {
-                $parsed  = $raw.Substring($jsonStart) | ConvertFrom-Json
-                $results = $parsed[0].results
-                if ($results.Count -eq 0) {
-                    $value = '0'
-                } elseif ($results.Count -eq 1) {
-                    $value = [string]$results[0].value
-                } else {
-                    $value = ($results | ForEach-Object { [string]$_.value }) -join '; '
-                }
-            } else {
-                $value  = 'PARSE_ERROR'
-                $status = 'error'
-                $notes  = 'Could not find JSON in wrangler output'
-            }
+Write-Host "timestamp:      $timestamp"
+Write-Host "images:         $images"
+Write-Host "db_size_kb:     $db_size_kb"
+Write-Host "users:          $users"
+Write-Host "rsvp_confirmed: $rsvp_confirmed"
 
-            if ($status -eq 'ok' -and $limitVal -ne '' -and $value -match '^[\d.]+$') {
-                if ([double]$value -ge [double]$limitVal) { $status = 'WARNING' }
-            }
-        } catch {
-            $value  = 'ERROR'
-            $status = 'error'
-            $notes  = ($_.Exception.Message -replace '\r?\n', ' ')
-        }
-    } elseif ($check.type -eq 'manual') {
-        $value  = 'manual'
-        $status = 'manual'
-        if ($check.PSObject.Properties['dashboard_path']) { $notes = $check.dashboard_path }
-        $limitVal = ''
-    } else {
-        $value  = 'skipped'
-        $status = 'skipped'
-    }
-
-    $row = "$(ConvertTo-CsvField $timestamp),$(ConvertTo-CsvField $check.id),$(ConvertTo-CsvField $check.category),$(ConvertTo-CsvField $check.name),$(ConvertTo-CsvField $value),$(ConvertTo-CsvField $limitVal),$(ConvertTo-CsvField $limitUnit),$(ConvertTo-CsvField $status),$(ConvertTo-CsvField $notes)"
-    $rows.Add($row)
-
-    $limitDisplay = if ($limitVal -ne '') { " / $limitVal" } else { '' }
-    Write-Host "  [$status] $($check.id): $value$limitDisplay $limitUnit"
-}
-
-$utf8 = New-Object System.Text.UTF8Encoding $false
-
-# Dated snapshot — overwrite (one snapshot per day)
-[System.IO.File]::WriteAllText($datedFile, ($header + "`n" + ($rows -join "`n") + "`n"), $utf8)
-Write-Host "`nDated:   $datedFile"
-
-# Running log — append
 if (-not (Test-Path $runningFile)) {
     [System.IO.File]::WriteAllText($runningFile, $header + "`n", $utf8)
 }
-[System.IO.File]::AppendAllText($runningFile, ($rows -join "`n") + "`n", $utf8)
+[System.IO.File]::AppendAllText($runningFile, $row + "`n", $utf8)
+
+[System.IO.File]::WriteAllText($datedFile, $header + "`n" + $row + "`n", $utf8)
+
+Write-Host "`nDated:   $datedFile"
 Write-Host "Running: $runningFile"
