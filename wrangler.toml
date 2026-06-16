@@ -6,3 +6,7 @@ pages_build_output_dir = "dist"
 binding = "DB"
 database_name = "lorraine-90th-db"
 database_id = "c6fe8286-f6a8-4df6-a17b-3a81a3727419"
+
+[[r2_buckets]]
+binding = "PHOTOS_BUCKET"
+bucket_name = "lorraine-90th-photos"

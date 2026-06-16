@@ -4,10 +4,14 @@ import LoginPage from './components/LoginPage';
 import Layout from './components/Layout';
 import UserView from './components/UserView';
 import AdminView from './components/AdminView';
+import ScrapbookPage from './components/ScrapbookPage';
+
+export type Page = 'home' | 'scrapbook';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState<Page>('home');
 
   useEffect(() => {
     fetch('/api/me')
@@ -30,8 +34,14 @@ export default function App() {
   }
 
   return (
-    <Layout user={user}>
-      {user.is_admin ? <AdminView user={user} /> : <UserView user={user} />}
+    <Layout user={user} page={page} onNavigate={setPage}>
+      {page === 'scrapbook' ? (
+        <ScrapbookPage user={user} />
+      ) : user.is_admin ? (
+        <AdminView user={user} />
+      ) : (
+        <UserView user={user} onNavigate={setPage} />
+      )}
     </Layout>
   );
 }

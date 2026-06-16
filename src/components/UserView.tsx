@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import type { User, Question, Rsvp } from '../types';
+import type { Page } from '../App';
 
 const QUESTION_MAX = 500;
 
 interface Props {
   user: User;
+  onNavigate: (page: Page) => void;
 }
 
-export default function UserView({ user }: Props) {
+export default function UserView({ user, onNavigate }: Props) {
   const [rsvp, setRsvp] = useState<Rsvp | null>(null);
   const [rsvpLoading, setRsvpLoading] = useState(true);
   const [rsvpName, setRsvpName] = useState(user.name);
@@ -77,6 +79,20 @@ export default function UserView({ user }: Props) {
           <Detail label="Location" value="Contact the family for the address" />
         </div>
       </Card>
+
+      {/* Scrapbook */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gold-100 p-6 flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex-1 text-center sm:text-left">
+          <h3 className="font-serif text-xl font-semibold text-stone-700 mb-1">Scrapbook</h3>
+          <p className="text-stone-400 text-sm">Share photos and memories for Lorraine's 90th Birthday</p>
+        </div>
+        <button
+          onClick={() => onNavigate('scrapbook')}
+          className="shrink-0 bg-gold-500 hover:bg-gold-600 text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+        >
+          Upload Photo to Scrapbook
+        </button>
+      </div>
 
       {/* RSVP */}
       <Card title="RSVP">

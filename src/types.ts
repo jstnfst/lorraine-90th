@@ -23,3 +23,11 @@ export interface Rsvp {
   confirmed: boolean;
   created_at: string;
 }
+
+export interface Photo {
+  id: number;
+  user_id: string;
+  user_name: string;
+  key: string;
+  created_at: string;
+}
