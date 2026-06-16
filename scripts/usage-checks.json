@@ -73,7 +73,7 @@
       "command": "SELECT COUNT(*) AS value FROM photos",
       "limit": null,
       "limit_unit": "objects",
-      "note": "Mirrors R2 exactly since every upload inserts a DB row. R2 free tier: 1M Class A ops/month (writes/deletes), 10M Class B ops/month (reads), 10 GB storage — op counts in Cloudflare dashboard → R2 → lorraine-90th-photos → Metrics."
+      "note": "Mirrors R2 exactly since every upload inserts a DB row. R2 free tier: 1M Class A ops/month (writes/deletes), 10M Class B ops/month (reads), 10 GB storage. Check Cloudflare dashboard > R2 > lorraine-90th-photos > Metrics for op counts."
     },
     {
       "id": "d1_metrics",
@@ -81,7 +81,7 @@
       "name": "D1 rows read / written / storage",
       "type": "manual",
       "command": null,
-      "dashboard_path": "Cloudflare dashboard → D1 → lorraine-90th-db → Metrics",
+      "dashboard_path": "Cloudflare dashboard > D1 > lorraine-90th-db > Metrics",
       "limits": {
         "rows_read_per_day": 5000000,
         "rows_written_per_day": 100000,
@@ -94,7 +94,7 @@
       "name": "R2 Class A / Class B operation counts",
       "type": "manual",
       "command": null,
-      "dashboard_path": "Cloudflare dashboard → R2 → lorraine-90th-photos → Metrics",
+      "dashboard_path": "Cloudflare dashboard > R2 > lorraine-90th-photos > Metrics",
       "limits": {
         "class_a_ops_per_month": 1000000,
         "class_b_ops_per_month": 10000000,
@@ -107,7 +107,7 @@
       "name": "Pages Function invocations",
       "type": "manual",
       "command": null,
-      "dashboard_path": "Cloudflare dashboard → Pages → lorraine-90th → Functions",
+      "dashboard_path": "Cloudflare dashboard > Pages > lorraine-90th > Functions",
       "limits": {
         "requests_per_day": 100000,
         "cpu_ms_per_request_avg": 10
