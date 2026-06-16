@@ -1,7 +1,7 @@
 # Usage: .\scripts\run-usage-checks.ps1  (run from repo root)
 
 $timestamp   = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-$dateSlug    = Get-Date -Format 'yyyy-MM-dd'
+$dateSlug    = Get-Date -Format 'yyyy-MM-dd_HH-mm-ss'
 $config      = Get-Content "$PSScriptRoot\usage-checks.json" -Raw | ConvertFrom-Json
 $db          = $config.db
 $utf8        = New-Object System.Text.UTF8Encoding $false
