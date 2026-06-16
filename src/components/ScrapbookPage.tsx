@@ -19,6 +19,7 @@ export default function ScrapbookPage({ user }: Props) {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ text: string; error?: boolean } | null>(null);
+  const [deletingKey, setDeletingKey] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -61,6 +62,13 @@ export default function ScrapbookPage({ user }: Props) {
 
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  async function handleDelete(key: string) {
+    setDeletingKey(key);
+    const r = await fetch(`/api/photos/${key}`, { method: 'DELETE' });
+    if (r.ok) setPhotos(prev => prev.filter(p => p.key !== key));
+    setDeletingKey(null);
   }
 
   return (
@@ -129,6 +137,16 @@ export default function ScrapbookPage({ user }: Props) {
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
                     <p className="text-white text-xs font-medium truncate">{photo.user_name}</p>
                   </div>
+                  {(user.is_admin || photo.user_id === user.id) && (
+                    <button
+                      onClick={() => handleDelete(photo.key)}
+                      disabled={deletingKey === photo.key}
+                      aria-label="Delete photo"
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 hover:bg-red-500/80 disabled:opacity-30 text-white rounded-full p-1"
+                    >
+                      <TrashIcon />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -136,6 +154,18 @@ export default function ScrapbookPage({ user }: Props) {
         )}
       </div>
     </div>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+    </svg>
   );
 }
 
