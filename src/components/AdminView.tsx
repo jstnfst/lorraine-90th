@@ -12,6 +12,7 @@ interface UserRecord {
   email: string;
   name: string;
   is_admin: boolean;
+  banned: boolean;
   created_at: string;
 }
 
@@ -24,6 +25,9 @@ export default function AdminView({ user }: Props) {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [usersLoading, setUsersLoading] = useState(true);
   const [promotingId, setPromotingId] = useState<string | null>(null);
+  const [confirmAdminId, setConfirmAdminId] = useState<string | null>(null);
+  const [confirmBanId, setConfirmBanId] = useState<string | null>(null);
+  const [banningId, setBanningId] = useState<string | null>(null);
 
   const [rsvps, setRsvps] = useState<(Rsvp & { name: string; email: string })[]>([]);
   const [rsvpsLoading, setRsvpsLoading] = useState(true);
@@ -72,6 +76,21 @@ export default function AdminView({ user }: Props) {
     setPromotingId(null);
   }
 
+  async function banUser(userId: string) {
+    setBanningId(userId);
+    const r = await fetch(`/api/admin/users/${userId}/ban`, { method: 'POST' });
+    if (r.ok) setUsers(prev => prev.map(u => u.id === userId ? { ...u, banned: true } : u));
+    setBanningId(null);
+    setConfirmBanId(null);
+  }
+
+  async function unbanUser(userId: string) {
+    setBanningId(userId);
+    const r = await fetch(`/api/admin/users/${userId}/unban`, { method: 'POST' });
+    if (r.ok) setUsers(prev => prev.map(u => u.id === userId ? { ...u, banned: false } : u));
+    setBanningId(null);
+  }
+
   async function confirmRsvp(rsvpId: number) {
     setConfirmingId(rsvpId);
     const r = await fetch(`/api/admin/rsvps/${rsvpId}/confirm`, { method: 'POST' });
@@ -98,44 +117,43 @@ export default function AdminView({ user }: Props) {
         ) : rsvps.length === 0 ? (
           <p className="text-stone-400 text-sm italic">No RSVPs yet.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-stone-100">
-                  <th className="text-left py-2 pr-4 text-stone-400 font-medium">Name</th>
-                  <th className="text-left py-2 pr-4 text-stone-400 font-medium">Email</th>
-                  <th className="text-left py-2 pr-4 text-stone-400 font-medium">Status</th>
-                  <th className="py-2" />
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-stone-100">
+                <th className="text-left py-2 pr-4 text-stone-400 font-medium">Guest</th>
+                <th className="text-left py-2 pr-4 text-stone-400 font-medium">Status</th>
+                <th className="py-2" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-stone-50">
+              {rsvps.map(r => (
+                <tr key={r.id}>
+                  <td className="py-2 pr-4">
+                    <p className="text-stone-700 font-medium">{r.name}</p>
+                    <p className="text-stone-400 text-xs">{r.email}</p>
+                  </td>
+                  <td className="py-2 pr-4">
+                    {r.confirmed ? (
+                      <span className="text-green-600 font-semibold">Confirmed</span>
+                    ) : (
+                      <span className="text-amber-500">Pending</span>
+                    )}
+                  </td>
+                  <td className="py-2">
+                    {!r.confirmed && (
+                      <button
+                        onClick={() => confirmRsvp(r.id)}
+                        disabled={confirmingId === r.id}
+                        className="text-xs bg-gold-500 hover:bg-gold-600 disabled:opacity-50 text-white px-3 py-1 rounded-full transition-colors"
+                      >
+                        {confirmingId === r.id ? 'Confirming...' : 'Confirm'}
+                      </button>
+                    )}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-50">
-                {rsvps.map(r => (
-                  <tr key={r.id}>
-                    <td className="py-2 pr-4 text-stone-700 font-medium">{r.name}</td>
-                    <td className="py-2 pr-4 text-stone-500">{r.email}</td>
-                    <td className="py-2 pr-4">
-                      {r.confirmed ? (
-                        <span className="text-green-600 font-semibold">Confirmed</span>
-                      ) : (
-                        <span className="text-amber-500">Pending</span>
-                      )}
-                    </td>
-                    <td className="py-2">
-                      {!r.confirmed && (
-                        <button
-                          onClick={() => confirmRsvp(r.id)}
-                          disabled={confirmingId === r.id}
-                          className="text-xs bg-gold-500 hover:bg-gold-600 disabled:opacity-50 text-white px-3 py-1 rounded-full transition-colors"
-                        >
-                          {confirmingId === r.id ? 'Confirming...' : 'Confirm'}
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
       </Card>
 
@@ -205,48 +223,113 @@ export default function AdminView({ user }: Props) {
         {usersLoading ? (
           <p className="text-stone-400 text-sm">Loading...</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-stone-100">
-                  <th className="text-left py-2 pr-4 text-stone-400 font-medium">Name</th>
-                  <th className="text-left py-2 pr-4 text-stone-400 font-medium">Email</th>
-                  <th className="text-left py-2 pr-4 text-stone-400 font-medium">Role</th>
-                  <th className="py-2" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-50">
-                {users.map(u => (
-                  <tr key={u.id}>
-                    <td className="py-2 pr-4 text-stone-700">{u.name}</td>
-                    <td className="py-2 pr-4 text-stone-500">{u.email}</td>
-                    <td className="py-2 pr-4">
-                      {u.is_admin ? (
-                        <span className="bg-gold-100 text-gold-700 text-xs font-semibold px-2 py-0.5 rounded-full">
-                          Admin
-                        </span>
-                      ) : (
-                        <span className="text-stone-400 text-xs">Guest</span>
-                      )}
-                    </td>
-                    <td className="py-2">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-stone-100">
+                <th className="text-left py-2 pr-4 text-stone-400 font-medium">Guest</th>
+                <th className="text-left py-2 pr-4 text-stone-400 font-medium">Role</th>
+                <th className="py-2" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-stone-50">
+              {users.filter(u => !u.banned).map(u => (
+                <tr key={u.id}>
+                  <td className="py-2 pr-4">
+                    <p className="text-stone-700">{u.name}</p>
+                    <p className="text-stone-400 text-xs">{u.email}</p>
+                  </td>
+                  <td className="py-2 pr-4">
+                    {u.is_admin ? (
+                      <span className="bg-gold-100 text-gold-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+                        Admin
+                      </span>
+                    ) : (
+                      <span className="text-stone-400 text-xs">Guest</span>
+                    )}
+                  </td>
+                  <td className="py-2">
+                    <div className="flex items-center gap-3">
                       {!u.is_admin && u.id !== user.id && (
-                        <button
-                          onClick={() => makeAdmin(u.id)}
-                          disabled={promotingId === u.id}
-                          className="text-xs text-gold-600 hover:text-gold-800 disabled:opacity-50 font-medium transition-colors"
-                        >
-                          {promotingId === u.id ? 'Promoting...' : 'Make admin'}
-                        </button>
+                        confirmAdminId === u.id ? (
+                          <span className="inline-flex items-center gap-2">
+                            <button
+                              onClick={() => { makeAdmin(u.id); setConfirmAdminId(null); }}
+                              disabled={promotingId === u.id}
+                              className="text-xs bg-lavender-600 hover:bg-lavender-700 disabled:opacity-50 text-white font-semibold px-3 py-1 rounded-full transition-colors"
+                            >
+                              {promotingId === u.id ? 'Promoting...' : 'Yes, promote'}
+                            </button>
+                            <button onClick={() => setConfirmAdminId(null)} className="text-xs text-stone-400 hover:text-stone-600 transition-colors">
+                              Cancel
+                            </button>
+                          </span>
+                        ) : (
+                          <button onClick={() => setConfirmAdminId(u.id)} className="text-xs text-gold-600 hover:text-gold-800 font-medium transition-colors">
+                            Make admin
+                          </button>
+                        )
                       )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      {u.id !== user.id && (
+                        confirmBanId === u.id ? (
+                          <span className="inline-flex items-center gap-2">
+                            <button
+                              onClick={() => banUser(u.id)}
+                              disabled={banningId === u.id}
+                              className="text-xs bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-semibold px-3 py-1 rounded-full transition-colors"
+                            >
+                              {banningId === u.id ? 'Banning...' : 'Yes, ban'}
+                            </button>
+                            <button onClick={() => setConfirmBanId(null)} className="text-xs text-stone-400 hover:text-stone-600 transition-colors">
+                              Cancel
+                            </button>
+                          </span>
+                        ) : (
+                          <button onClick={() => setConfirmBanId(u.id)} className="text-xs text-red-400 hover:text-red-600 font-medium transition-colors">
+                            Ban
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </Card>
+
+      {/* Banned Users */}
+      {!usersLoading && users.some(u => u.banned) && (
+        <Card title="Banned Users">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-stone-100">
+                <th className="text-left py-2 pr-4 text-stone-400 font-medium">Guest</th>
+                <th className="py-2" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-stone-50">
+              {users.filter(u => u.banned).map(u => (
+                <tr key={u.id}>
+                  <td className="py-2 pr-4">
+                    <p className="text-stone-400 line-through">{u.name}</p>
+                    <p className="text-stone-300 text-xs">{u.email}</p>
+                  </td>
+                  <td className="py-2 text-right">
+                    <button
+                      onClick={() => unbanUser(u.id)}
+                      disabled={banningId === u.id}
+                      className="text-xs text-green-600 hover:text-green-800 disabled:opacity-50 font-medium transition-colors"
+                    >
+                      {banningId === u.id ? 'Unbanning...' : 'Unban'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      )}
     </div>
   );
 }

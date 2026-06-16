@@ -20,5 +20,6 @@ export interface DbUser {
   email: string;
   name: string;
   is_admin: number;
+  banned: number;
   created_at: string;
 }
