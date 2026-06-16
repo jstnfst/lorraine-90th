@@ -74,7 +74,7 @@ export default function UserView({ user, onNavigate }: Props) {
       {/* Event Details */}
       <Card title="The Celebration">
         <div className="grid sm:grid-cols-3 gap-4 text-center">
-          <Detail label="Date" value="September 5, 2026" />
+          <Detail label="Date" value="Saturday, September 5, 2026" />
           <Detail label="Time" value="12:00 PM – 6:00 PM" />
           <Detail label="Location" value="Contact the family for the address" />
         </div>
