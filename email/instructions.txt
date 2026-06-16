@@ -1,0 +1,40 @@
+HOW TO SEND THE INVITATION EMAIL IN GMAIL
+=========================================
+
+1. Open "invitation-email.html" in a web browser
+   (double-click the file, or drag it into a browser window)
+
+2. Select everything on the page
+   Windows: Ctrl + A
+   Mac:     Cmd + A
+
+3. Copy
+   Windows: Ctrl + C
+   Mac:     Cmd + C
+
+4. Open Gmail and click "Compose" to start a new email
+
+5. Click inside the email body and paste
+   Windows: Ctrl + V
+   Mac:     Cmd + V
+   The formatted invitation should appear with colors and layout intact.
+
+6. Fill in the To: field with the guest's email address
+   Send one at a time, or use BCC to send to multiple guests at once
+   without revealing everyone's email address to each other.
+
+7. Set the subject line — suggested:
+   "You're Invited — Lorraine's 90th Birthday"
+
+8. Hit Send.
+
+
+NOTES
+-----
+- Do not forward the email to yourself first — copy fresh from the
+  browser each time, or the formatting may degrade.
+- If the layout looks broken after pasting, make sure you are pasting
+  into the email body (not the subject line) and that Gmail's
+  formatting toolbar is visible (not plain-text mode).
+- To switch Gmail out of plain-text mode: in the compose window, click
+  the three-dot menu at the bottom right and uncheck "Plain text mode".
