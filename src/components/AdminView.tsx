@@ -117,6 +117,7 @@ export default function AdminView({ user }: Props) {
         ) : rsvps.length === 0 ? (
           <p className="text-stone-400 text-sm italic">No RSVPs yet.</p>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-stone-100">
@@ -154,6 +155,7 @@ export default function AdminView({ user }: Props) {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </Card>
 
