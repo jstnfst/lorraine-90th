@@ -3,6 +3,8 @@ export interface Env {
   PHOTOS_BUCKET: R2Bucket;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
+  MICROSOFT_CLIENT_ID: string;
+  MICROSOFT_CLIENT_SECRET: string;
   JWT_SECRET: string;
   SITE_URL: string;
 }

@@ -18,15 +18,35 @@ export default function LoginPage() {
         <p className="text-stone-500 mb-8">
           Sign in with your Google account to RSVP and leave a message for Lorraine.
         </p>
-        <a
-          href="/api/auth/google"
-          className="inline-flex items-center gap-3 bg-white border-2 border-lavender-400 text-stone-700 font-semibold px-6 py-3 rounded-full hover:bg-lavender-50 hover:border-lavender-500 transition-colors shadow-sm"
-        >
-          <GoogleIcon />
-          Sign in with Google
-        </a>
+        <div className="flex flex-col gap-3">
+          <a
+            href="/api/auth/google"
+            className="inline-flex items-center justify-center gap-3 bg-white border-2 border-lavender-400 text-stone-700 font-semibold px-6 py-3 rounded-full hover:bg-lavender-50 hover:border-lavender-500 transition-colors shadow-sm"
+          >
+            <GoogleIcon />
+            Sign in with Google
+          </a>
+          <a
+            href="/api/auth/microsoft"
+            className="inline-flex items-center justify-center gap-3 bg-[#0078D4] hover:bg-[#106EBE] text-white font-semibold px-6 py-3 rounded-full transition-colors shadow-sm"
+          >
+            <MicrosoftIcon />
+            Sign in with Microsoft
+          </a>
+        </div>
       </div>
     </div>
+  );
+}
+
+function MicrosoftIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 21 21" aria-hidden="true">
+      <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+      <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+      <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+      <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+    </svg>
   );
 }
 
