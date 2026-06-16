@@ -1,0 +1,127 @@
+{
+  "db": "lorraine-90th-db",
+  "bucket": "lorraine-90th-photos",
+  "checks": [
+    {
+      "id": "photos_total",
+      "category": "Application",
+      "name": "Total photos stored",
+      "type": "d1_query",
+      "command": "SELECT COUNT(*) AS value FROM photos",
+      "limit": null,
+      "limit_unit": "photos"
+    },
+    {
+      "id": "photos_max_per_user",
+      "category": "Application",
+      "name": "Max photos by a single user",
+      "type": "d1_query",
+      "command": "SELECT COALESCE(MAX(photo_count), 0) AS value FROM (SELECT COUNT(*) AS photo_count FROM photos GROUP BY user_id)",
+      "limit": 10,
+      "limit_unit": "photos/user"
+    },
+    {
+      "id": "top_uploaders",
+      "category": "Application",
+      "name": "Top uploaders (name + count)",
+      "type": "d1_query",
+      "command": "SELECT u.name || ' (' || COUNT(*) || ' photos)' AS value FROM photos p JOIN users u ON u.id = p.user_id GROUP BY p.user_id ORDER BY COUNT(*) DESC LIMIT 5",
+      "limit": null,
+      "limit_unit": "rows"
+    },
+    {
+      "id": "users_total",
+      "category": "Application",
+      "name": "Total registered users",
+      "type": "d1_query",
+      "command": "SELECT COUNT(*) AS value FROM users",
+      "limit": null,
+      "limit_unit": "users"
+    },
+    {
+      "id": "users_banned",
+      "category": "Application",
+      "name": "Banned users",
+      "type": "d1_query",
+      "command": "SELECT COUNT(*) AS value FROM users WHERE banned = 1",
+      "limit": null,
+      "limit_unit": "users"
+    },
+    {
+      "id": "rsvps_yes",
+      "category": "Application",
+      "name": "RSVPs: Yes",
+      "type": "d1_query",
+      "command": "SELECT COUNT(*) AS value FROM rsvps WHERE rsvp = 'yes'",
+      "limit": null,
+      "limit_unit": "guests"
+    },
+    {
+      "id": "rsvps_no",
+      "category": "Application",
+      "name": "RSVPs: No",
+      "type": "d1_query",
+      "command": "SELECT COUNT(*) AS value FROM rsvps WHERE rsvp = 'no'",
+      "limit": null,
+      "limit_unit": "guests"
+    },
+    {
+      "id": "r2_object_count",
+      "category": "R2",
+      "name": "R2 object count",
+      "type": "wrangler_r2_list",
+      "command": "wrangler r2 object list lorraine-90th-photos",
+      "limit": null,
+      "limit_unit": "objects",
+      "note": "R2 free tier: 1M Class A ops/month (writes/deletes), 10M Class B ops/month (reads), 10 GB storage. Op counts visible in Cloudflare dashboard → R2 → lorraine-90th-photos → Metrics."
+    },
+    {
+      "id": "r2_storage_estimate_mb",
+      "category": "R2",
+      "name": "R2 estimated storage (from DB metadata)",
+      "type": "d1_query",
+      "command": "SELECT ROUND(SUM(size) / 1048576.0, 2) AS value FROM photos",
+      "limit": 10240,
+      "limit_unit": "MB",
+      "note": "Requires a 'size' column in the photos table. If not present, check R2 dashboard directly. 10 GB free tier = 10240 MB."
+    },
+    {
+      "id": "d1_metrics",
+      "category": "D1",
+      "name": "D1 rows read / written / storage",
+      "type": "manual",
+      "command": null,
+      "dashboard_path": "Cloudflare dashboard → D1 → lorraine-90th-db → Metrics",
+      "limits": {
+        "rows_read_per_day": 5000000,
+        "rows_written_per_day": 100000,
+        "storage_mb": 500
+      }
+    },
+    {
+      "id": "r2_op_metrics",
+      "category": "R2",
+      "name": "R2 Class A / Class B operation counts",
+      "type": "manual",
+      "command": null,
+      "dashboard_path": "Cloudflare dashboard → R2 → lorraine-90th-photos → Metrics",
+      "limits": {
+        "class_a_ops_per_month": 1000000,
+        "class_b_ops_per_month": 10000000,
+        "storage_gb_per_month": 10
+      }
+    },
+    {
+      "id": "pages_functions",
+      "category": "Pages Functions",
+      "name": "Pages Function invocations",
+      "type": "manual",
+      "command": null,
+      "dashboard_path": "Cloudflare dashboard → Pages → lorraine-90th → Functions",
+      "limits": {
+        "requests_per_day": 100000,
+        "cpu_ms_per_request_avg": 10
+      }
+    }
+  ]
+}
