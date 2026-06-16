@@ -60,13 +60,15 @@ export default function Layout({ user, page, onNavigate, children }: Props) {
         </div>
       </header>
 
-      <div className="relative h-44 sm:h-56 overflow-hidden">
-        <img
-          src="/bike.webp"
-          alt="Lavender fields at sunset"
-          className="w-full h-full object-cover object-[center_30%]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-lavender-950/10 to-lavender-950/50" />
+      <div className="max-w-4xl mx-auto px-4 pt-4">
+        <div className="relative h-44 sm:h-56 overflow-hidden rounded-2xl">
+          <img
+            src="/bike.webp"
+            alt="Lavender fields at sunset"
+            className="w-full h-full object-cover object-[center_30%]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-lavender-950/10 to-lavender-950/50" />
+        </div>
       </div>
 
       <main className="max-w-4xl mx-auto px-4 py-8">{children}</main>
