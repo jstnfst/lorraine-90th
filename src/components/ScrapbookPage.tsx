@@ -86,13 +86,13 @@ export default function ScrapbookPage({ user: _user }: Props) {
             <p className="font-serif text-stone-500 text-sm mb-4">
               {photos.length} memor{photos.length !== 1 ? 'ies' : 'y'}
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="columns-2 sm:columns-3 gap-3">
               {photos.map(photo => (
-                <div key={photo.id} className="group relative aspect-square overflow-hidden rounded-xl bg-lavender-100 shadow-sm">
+                <div key={photo.id} className="group relative break-inside-avoid mb-3 overflow-hidden rounded-xl bg-lavender-100 shadow-sm">
                   <img
                     src={`/api/photos/${photo.key}`}
                     alt={`Shared by ${photo.user_name}`}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-auto block"
                     loading="lazy"
                   />
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
