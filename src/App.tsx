@@ -20,7 +20,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="font-serif text-gold-600 text-xl italic">Loading...</p>
+        <p className="font-serif text-lavender-500 text-xl italic">Loading...</p>
       </div>
     );
   }

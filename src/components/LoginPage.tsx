@@ -1,14 +1,18 @@
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-purple-950">
-      <div className="bg-white rounded-2xl shadow-2xl border border-purple-200 p-10 max-w-md w-full text-center">
-        <p className="font-serif text-purple-500 text-sm uppercase tracking-widest mb-2">
+    <div
+      className="min-h-screen flex items-center justify-center px-4 relative"
+      style={{ backgroundImage: 'url(/bike.webp)', backgroundSize: 'cover', backgroundPosition: 'center 30%' }}
+    >
+      <div className="absolute inset-0 bg-lavender-950/65" />
+      <div className="relative z-10 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-lavender-200 p-10 max-w-md w-full text-center">
+        <p className="font-serif text-lavender-500 text-sm uppercase tracking-widest mb-2">
           You're invited
         </p>
         <h1 className="font-serif text-4xl font-bold text-stone-800 leading-tight mb-2">
           Lorraine's
         </h1>
-        <h2 className="font-serif text-5xl font-bold text-purple-600 leading-tight mb-6">
+        <h2 className="font-serif text-5xl font-bold text-lavender-600 leading-tight mb-6">
           90<span className="text-stone-800">th</span>
         </h2>
         <p className="text-stone-500 mb-8">
@@ -16,7 +20,7 @@ export default function LoginPage() {
         </p>
         <a
           href="/api/auth/google"
-          className="inline-flex items-center gap-3 bg-white border-2 border-purple-400 text-stone-700 font-semibold px-6 py-3 rounded-full hover:bg-purple-50 hover:border-purple-500 transition-colors shadow-sm"
+          className="inline-flex items-center gap-3 bg-white border-2 border-lavender-400 text-stone-700 font-semibold px-6 py-3 rounded-full hover:bg-lavender-50 hover:border-lavender-500 transition-colors shadow-sm"
         >
           <GoogleIcon />
           Sign in with Google
