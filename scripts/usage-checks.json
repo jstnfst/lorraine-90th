@@ -48,42 +48,32 @@
       "limit_unit": "users"
     },
     {
-      "id": "rsvps_yes",
+      "id": "rsvps_total",
       "category": "Application",
-      "name": "RSVPs: Yes",
+      "name": "Total RSVPs submitted",
       "type": "d1_query",
-      "command": "SELECT COUNT(*) AS value FROM rsvps WHERE rsvp = 'yes'",
+      "command": "SELECT COUNT(*) AS value FROM rsvps",
       "limit": null,
       "limit_unit": "guests"
     },
     {
-      "id": "rsvps_no",
+      "id": "rsvps_confirmed",
       "category": "Application",
-      "name": "RSVPs: No",
+      "name": "RSVPs confirmed (confirmed=1)",
       "type": "d1_query",
-      "command": "SELECT COUNT(*) AS value FROM rsvps WHERE rsvp = 'no'",
+      "command": "SELECT COUNT(*) AS value FROM rsvps WHERE confirmed = 1",
       "limit": null,
       "limit_unit": "guests"
     },
     {
       "id": "r2_object_count",
       "category": "R2",
-      "name": "R2 object count",
-      "type": "wrangler_r2_list",
-      "command": "wrangler r2 object list lorraine-90th-photos",
+      "name": "R2 object count (via photos table)",
+      "type": "d1_query",
+      "command": "SELECT COUNT(*) AS value FROM photos",
       "limit": null,
       "limit_unit": "objects",
-      "note": "R2 free tier: 1M Class A ops/month (writes/deletes), 10M Class B ops/month (reads), 10 GB storage. Op counts visible in Cloudflare dashboard → R2 → lorraine-90th-photos → Metrics."
-    },
-    {
-      "id": "r2_storage_estimate_mb",
-      "category": "R2",
-      "name": "R2 estimated storage (from DB metadata)",
-      "type": "d1_query",
-      "command": "SELECT ROUND(SUM(size) / 1048576.0, 2) AS value FROM photos",
-      "limit": 10240,
-      "limit_unit": "MB",
-      "note": "Requires a 'size' column in the photos table. If not present, check R2 dashboard directly. 10 GB free tier = 10240 MB."
+      "note": "Mirrors R2 exactly since every upload inserts a DB row. R2 free tier: 1M Class A ops/month (writes/deletes), 10M Class B ops/month (reads), 10 GB storage — op counts in Cloudflare dashboard → R2 → lorraine-90th-photos → Metrics."
     },
     {
       "id": "d1_metrics",

@@ -1,0 +1,12 @@
+date,id,category,name,value,limit,limit_unit,status,notes
+2026-06-16,photos_total,Application,Total photos stored,2,,photos,ok,
+2026-06-16,photos_max_per_user,Application,Max photos by a single user,1,10,photos/user,ok,
+2026-06-16,top_uploaders,Application,Top uploaders (name + count),"Jacqueline Faust (1 photos); Justin Faust (1 photos)",,rows,ok,
+2026-06-16,users_total,Application,Total registered users,5,,users,ok,
+2026-06-16,users_banned,Application,Banned users,1,,users,ok,
+2026-06-16,rsvps_total,Application,Total RSVPs submitted,3,,guests,ok,
+2026-06-16,rsvps_confirmed,Application,RSVPs confirmed,2,,guests,ok,
+2026-06-16,r2_object_count,R2,R2 object count (via photos table),2,,objects,ok,
+2026-06-16,d1_metrics,D1,D1 rows read / written / storage,manual,,, ,Check Cloudflare dashboard → D1 → lorraine-90th-db → Metrics
+2026-06-16,r2_op_metrics,R2,R2 Class A / Class B op counts,manual,,,  ,Check Cloudflare dashboard → R2 → lorraine-90th-photos → Metrics
+2026-06-16,pages_functions,Pages Functions,Pages Function invocations,manual,,requests/day, ,Check Cloudflare dashboard → Pages → lorraine-90th → Functions
