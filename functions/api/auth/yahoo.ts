@@ -2,6 +2,7 @@ import type { Env } from '../../_shared/types';
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const state = crypto.randomUUID();
+  const nonce = crypto.randomUUID();
   const redirectUri = `${env.SITE_URL}/api/auth/yahoo/callback`;
 
   const params = new URLSearchParams({
@@ -10,6 +11,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
     response_type: 'code',
     scope: 'openid email profile',
     state,
+    nonce,
   });
 
   return new Response(null, {
