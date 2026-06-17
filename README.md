@@ -32,8 +32,13 @@ Three OAuth providers are supported. All share the same session/JWT logic via `f
 - Callback: `GET /api/auth/yahoo/callback`
 - Set up at: https://developer.yahoo.com/apps/
 - App type: **Confidential Client** (server-side, secret never exposed to browser)
+- Authorization endpoint: `https://api.login.yahoo.com/oauth2/request_auth`
+- Token endpoint: `https://api.login.yahoo.com/oauth2/get_token`
+- Userinfo endpoint: `https://api.login.yahoo.com/openid/v1/userinfo`
 - Token exchange uses HTTP Basic Auth (`base64(client_id:client_secret)`)
+- Required authorization parameters: `client_id`, `redirect_uri`, `response_type=code`, `scope`, `nonce`, `state`
 - Scopes: `openid email profile`
+- API permissions required in Yahoo app: OpenID Connect → Email + Profile
 - Env vars: `YAHOO_CLIENT_ID`, `YAHOO_CLIENT_SECRET`
 
 ## Environment Variables
