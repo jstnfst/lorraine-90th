@@ -1,6 +1,7 @@
 {
   "db": "lorraine-90th-db",
   "r2_bucket": "lorraine-90th-photos",
+  "cf_account_id": "881ee7a4277d8903f39d55be775589eb",
   "queries": {
     "images":         "SELECT COUNT(*) AS value FROM photos",
     "users":          "SELECT COUNT(*) AS value FROM users",

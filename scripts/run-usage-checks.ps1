@@ -29,17 +29,10 @@ $rsvp_confirmed       = $r3.results[0].value
 $rsvp_total           = $r4.results[0].value
 $questions_unanswered = $r5.results[0].value
 
-$r2info      = (npx wrangler r2 bucket info $config.r2_bucket) -join "`n"
-$sizeMatch   = [regex]::Match($r2info, 'bucket_size:\s+([\d.]+)\s+(\S+)')
-$sizeValue   = [double]$sizeMatch.Groups[1].Value
-$sizeUnit    = $sizeMatch.Groups[2].Value
-$r2_size_mb  = switch ($sizeUnit) {
-    'B'  { [math]::Round($sizeValue / 1MB, 2) }
-    'KB' { [math]::Round($sizeValue / 1KB, 2) }
-    'MB' { [math]::Round($sizeValue, 2) }
-    'GB' { [math]::Round($sizeValue * 1KB, 2) }
-    default { 0 }
-}
+$wranglerConfig = Get-Content "$env:APPDATA\xdg.config\.wrangler\config\default.toml" -Raw
+$cfToken     = [regex]::Match($wranglerConfig, 'oauth_token\s*=\s*"([^"]+)"').Groups[1].Value
+$r2usage     = Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/accounts/$($config.cf_account_id)/r2/buckets/$($config.r2_bucket)/usage" -Headers @{ Authorization = "Bearer $cfToken" }
+$r2_size_mb  = [math]::Round(([double]$r2usage.result.payloadSize + [double]$r2usage.result.metadataSize) / 1MB, 2)
 
 $row = "$timestamp,$images,$db_size_kb,$users,$rsvp_total,$rsvp_confirmed,$questions_unanswered,$r2_size_mb"
 
