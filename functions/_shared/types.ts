@@ -7,6 +7,7 @@ export interface Env {
   MICROSOFT_CLIENT_SECRET: string;
   YAHOO_CLIENT_ID: string;
   YAHOO_CLIENT_SECRET: string;
+  ADMIN_EMAIL: string;
   JWT_SECRET: string;
   SITE_URL: string;
 }

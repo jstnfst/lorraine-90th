@@ -2,7 +2,6 @@ import type { Env, DbUser } from './types';
 import { signJWT } from './jwt';
 
 const SESSION_SECONDS = 7 * 24 * 60 * 60;
-const ADMIN_EMAIL = 'jstnfst@gmail.com';
 
 export interface OAuthUserInfo {
   email: string;
@@ -24,7 +23,7 @@ export async function handleOAuthCallback(userInfo: OAuthUserInfo, env: Env): Pr
       .bind(userInfo.name, userId).run();
   } else {
     userId = crypto.randomUUID();
-    isAdmin = userInfo.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    isAdmin = userInfo.email.toLowerCase() === (env.ADMIN_EMAIL ?? '').toLowerCase();
     await env.DB.prepare('INSERT INTO users (id, email, name, is_admin) VALUES (?, ?, ?, ?)')
       .bind(userId, userInfo.email, userInfo.name, isAdmin ? 1 : 0).run();
   }
