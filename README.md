@@ -18,13 +18,28 @@ Three OAuth providers are supported. All share the same session/JWT logic via `f
 ### Google
 - Initiation: `GET /api/auth/google`
 - Callback: `GET /api/auth/callback`
-- Set up at: https://console.cloud.google.com → APIs & Services → Credentials
+- Set up at: https://console.cloud.google.com → APIs & Services → Credentials → OAuth client ID → Web application
+- Authorization endpoint: `https://accounts.google.com/o/oauth2/v2/auth`
+- Token endpoint: `https://oauth2.googleapis.com/token`
+- Userinfo endpoint: `https://www.googleapis.com/oauth2/v2/userinfo`
+- Token exchange uses POST body params (client_id + client_secret in body)
+- Required authorization parameters: `client_id`, `redirect_uri`, `response_type=code`, `scope`, `state`, `access_type=online`
+- Scopes: `openid email profile`
+- Consent screen: set to External; no special API permissions needed beyond the OAuth client itself
 - Env vars: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 
 ### Microsoft
 - Initiation: `GET /api/auth/microsoft`
 - Callback: `GET /api/auth/microsoft/callback`
-- Set up at: https://portal.azure.com → App registrations
+- Set up at: https://portal.azure.com → App registrations → New registration
+- Authorization endpoint: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`
+- Token endpoint: `https://login.microsoftonline.com/common/oauth2/v2.0/token`
+- Userinfo endpoint: `https://graph.microsoft.com/v1.0/me?$select=id,displayName,mail,userPrincipalName`
+- Token exchange uses POST body params (client_id + client_secret in body)
+- Required authorization parameters: `client_id`, `redirect_uri`, `response_type=code`, `scope`, `response_mode=query`, `state`
+- Scopes: `openid email profile User.Read`
+- Use `/common` tenant to support both personal and work Microsoft accounts
+- `mail` can be null on some personal accounts; fall back to `userPrincipalName`
 - Env vars: `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`
 
 ### Yahoo
