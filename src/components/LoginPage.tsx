@@ -16,7 +16,7 @@ export default function LoginPage() {
           90<span className="text-stone-800">th Birthday</span>
         </h2>
         <p className="text-stone-500 mb-8">
-          Sign in with your Google account to RSVP and leave a message for Lorraine.
+          Sign in to RSVP and leave a message for Lorraine.
         </p>
         <div className="flex flex-col gap-3">
           <a
@@ -33,6 +33,13 @@ export default function LoginPage() {
             <MicrosoftIcon />
             Sign in with Microsoft
           </a>
+          <a
+            href="/api/auth/yahoo"
+            className="inline-flex items-center justify-center gap-3 bg-[#6001D2] hover:bg-[#4B01A8] text-white font-semibold px-6 py-3 rounded-full transition-colors shadow-sm"
+          >
+            <YahooIcon />
+            Sign in with Yahoo
+          </a>
         </div>
       </div>
     </div>
@@ -46,6 +53,14 @@ function MicrosoftIcon() {
       <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
       <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
       <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+    </svg>
+  );
+}
+
+function YahooIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="white">
+      <path d="M0 3h6.6l5.4 8.3L17.4 3H24l-9 13.7V24h-6v-7.3z"/>
     </svg>
   );
 }
